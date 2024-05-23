@@ -90,7 +90,7 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
         rows, events, messages = [], [], {}
         function_names = [f"function_{str(i)}" for i in range(num)]
         type_names = [f"Error{str(i)}" for i in range(num)]
-        value_names = ["error with value" for i in range(num)]
+        value_names = ["error with value" for _ in range(num)]
         for i in range(num):
             data = {
                 "exception": self.create_exception_values(
@@ -113,7 +113,7 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
             GroupHash.objects.create(
                 project_id=event.group.project.id,
                 group_id=event.group.id,
-                hash="".join(choice(ascii_uppercase) for i in range(32)),
+                hash="".join(choice(ascii_uppercase) for _ in range(32)),
             )
 
         return {"rows": rows, "events": events, "messages": messages}
@@ -158,13 +158,13 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
     def test_lookup_group_data_stacktrace_single_success(self):
         """Test successful group data and stacktrace lookup"""
         event = self.event
-        hash = self.group_hashes[event.group.id]
+        hash_value = self.group_hashes[event.group.id]
         group_data, stacktrace_string = lookup_group_data_stacktrace_single(
-            self.project, event.event_id, event.group_id, event.group.message, hash
+            self.project, event.event_id, event.group_id, event.group.message, hash_value
         )
         expected_group_data = CreateGroupingRecordData(
             group_id=event.group.id,
-            hash=hash,
+            hash=hash_value,
             project_id=self.project.id,
             message=event.group.message,
         )
@@ -210,18 +210,18 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
             project_id=self.project.id,
             assert_no_errors=False,
         )
-        hash = GroupHash.objects.get(group_id=event.group.id)
+        grouphash = GroupHash.objects.get(group_id=event.group.id)
         group_data, stacktrace_string = lookup_group_data_stacktrace_single(
-            self.project, event.event_id, event.group_id, event.group.message, hash
+            self.project, event.event_id, event.group_id, event.group.message, grouphash
         )
         assert (group_data, stacktrace_string) == (None, "")
 
     def test_lookup_group_data_stacktrace_single_no_stacktrace(self):
         """Test that no data is returned if the event has no stacktrace"""
         event = self.store_event(data={}, project_id=self.project.id, assert_no_errors=False)
-        hash = GroupHash.objects.get(group_id=event.group.id)
+        grouphash = GroupHash.objects.get(group_id=event.group.id)
         group_data, stacktrace_string = lookup_group_data_stacktrace_single(
-            self.project, event.event_id, event.group_id, event.group.message, hash
+            self.project, event.event_id, event.group_id, event.group.message, grouphash
         )
         assert (group_data, stacktrace_string) == (None, "")
 
@@ -677,7 +677,7 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
 
         groups = Group.objects.filter(project_id=self.project.id)
         for group in groups:
-            assert not group.data["metadata"].get("seer_similarity") == {
+            assert group.data["metadata"].get("seer_similarity") != {
                 "similarity_model_version": SEER_SIMILARITY_MODEL_VERSION,
                 "request_hash": self.group_hashes[group.id],
             }
@@ -697,7 +697,7 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
 
         function_names = [f"new_function_{str(i)}" for i in range(5)]
         type_names = [f"NewError{str(i)}" for i in range(5)]
-        value_names = ["error with value" for i in range(5)]
+        value_names = ["error with value" for _ in range(5)]
         groups_seen_once = []
         for i in range(5):
             data = {
@@ -745,7 +745,7 @@ class TestBackfillSeerGroupingRecords(SnubaTestCase, TestCase):
         # The groups that will be similar to these groups, have times_seen = 5
         function_names = [f"another_function_{str(i)}" for i in range(5)]
         type_names = [f"AnotherError{str(i)}" for i in range(5)]
-        value_names = ["error with value" for i in range(5)]
+        value_names = ["error with value" for _ in range(5)]
         groups_with_neighbor = {}
         for i in range(5):
             data = {
