@@ -1,7 +1,7 @@
 import logging
 from dataclasses import asdict
 
-from sentry import features
+from sentry import features, options
 from sentry.eventstore.models import Event
 from sentry.grouping.grouping_info import get_grouping_info_from_variants
 from sentry.grouping.result import CalculatedHashes
@@ -21,6 +21,11 @@ def should_call_seer_for_grouping(event: Event, project: Project) -> bool:
     """
     # TODO: Implement rate limits, kill switches, other flags, etc
     # TODO: Return False if the event has a custom fingerprint (check for both client- and server-side fingerprints)
+
+    if options.get("seer.global-killswitch.enabled") or options.get(
+        "seer.similarity-killswitch.enabled"
+    ):
+        return False
 
     if not event_content_is_seer_eligible(event):
         return False
