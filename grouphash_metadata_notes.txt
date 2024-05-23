@@ -1,0 +1,31 @@
+
+
+fields
+  seer result metadata (minus hash value, probably)
+    seer model version
+    seer results
+      distances, should_group, parent hash/id
+  source config (most recent?)
+  creation and/or update date
+  grouping info
+    enhancements
+
+
+
+ingest
+
+  initial hash calculation
+
+  new hash
+    if seer call, write result metadata
+
+
+  known hash
+    check for seer results, add to seer queue if missing
+
+
+
+
+
+async seer queue
+  write result metadata
