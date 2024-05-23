@@ -1996,8 +1996,6 @@ SENTRY_FEATURES: dict[str, bool | None] = {
     "projects:plugins": True,
     # Enable ingesting non-sampled profiles
     "projects:profiling-ingest-unsampled-profiles": False,
-    # Enable alternative version of group creation that is supposed to be less racy.
-    "projects:race-free-group-creation": True,
     # Enable functionality for rate-limiting events on projects.
     "projects:rate-limits": True,
     # Enable functionality to trigger service hooks upon event ingestion.
