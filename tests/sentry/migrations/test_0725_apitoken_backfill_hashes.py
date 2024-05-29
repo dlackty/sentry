@@ -5,7 +5,6 @@ from sentry.testutils.helpers import override_options
 class TestBackfillApiTokenHashesMigration(TestMigrations):
     migrate_from = "0724_discover_saved_query_dataset"
     migrate_to = "0725_apitoken_backfill_hashes"
-    connection = "control"
 
     @override_options({"apitoken.save-hash-on-create": False})
     def setup_initial_state(self):
