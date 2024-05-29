@@ -1872,8 +1872,6 @@ SENTRY_FEATURES: dict[str, bool | None] = {
     "organizations:user-spend-notifications-settings": False,
     # Enable Slack messages using Block Kit
     "organizations:slack-block-kit": True,
-    # Send Slack notifications to threads for Issue Alerts
-    "organizations:slack-thread-issue-alert": False,
     # Enable improvements to Slack notifications
     "organizations:slack-improvements": False,
     # Add regression chart as image to slack message
