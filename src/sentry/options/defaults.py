@@ -906,6 +906,15 @@ register(
     flags=FLAG_ALLOW_EMPTY | FLAG_AUTOMATOR_MODIFIABLE,
 )
 
+register(
+    "seer.similarity.circuit-breaker-config",
+    type=Dict,
+    # TODO: For now we're using the defaults for everything but `allow_passthrough`. We may want to
+    # revisit that choice in the future.
+    default={"allow_passthrough": True},
+    flags=FLAG_ALLOW_EMPTY | FLAG_AUTOMATOR_MODIFIABLE,
+)
+
 
 register(
     "issues.similarity-embeddings.projects-allowlist",
