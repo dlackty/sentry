@@ -24,6 +24,9 @@ def should_call_seer_for_grouping(event: Event, project: Project) -> bool:
     # TODO: Implement rate limits, kill switches, other flags, etc
     # TODO: Return False if the event has a custom fingerprint (check for both client- and server-side fingerprints)
 
+    # The circuit breaker check which might naturally also be here instead happens in the
+    # `with_circuit_breaker` helper used where `get_seer_similar_issues` is actually called. (It has
+    # to be there in order for it to track errors arising from that call.)
     if _killswitch_enabled(event, project) or _ratelimiting_enabled(event, project):
         return False
 

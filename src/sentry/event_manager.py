@@ -126,6 +126,7 @@ from sentry.utils.circuit_breaker import (
     ERROR_COUNT_CACHE_KEY,
     CircuitBreakerPassthrough,
     circuit_breaker_activated,
+    with_circuit_breaker,
 )
 from sentry.utils.dates import to_datetime
 from sentry.utils.event import has_event_minified_stack_trace, has_stacktrace, is_handled
@@ -1496,8 +1497,10 @@ def _save_aggregate(
                     try:
                         # If the `projects:similarity-embeddings-grouping` feature is disabled,
                         # we'll still get back result metadata, but `seer_matched_group` will be None
-                        seer_response_data, seer_matched_group = get_seer_similar_issues(
-                            event, primary_hashes
+                        seer_response_data, seer_matched_group = with_circuit_breaker(
+                            "event_manager.get_seer_similar_issues",
+                            lambda: get_seer_similar_issues(event, primary_hashes),
+                            options.get("seer.similarity.circuit-breaker-config"),
                         )
                         event.data["seer_similarity"] = seer_response_data
 
